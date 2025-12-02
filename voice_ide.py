@@ -7,33 +7,40 @@ from dotenv import load_dotenv
 from llm_integration import GeminiCodeAssistant  
 
 def format_markdown_for_tk(text):
-        lines = text.split("\n")
-        formatted = []
+    lines = text.split("\n")
+    formatted = []
 
-        for line in lines:
-            # Format headings
-            if line.startswith("###"):
-                formatted.append("\n" + line.replace("###", "").strip().upper())
-                formatted.append("-" * 40)
-                continue
+    inside_code_block = False
 
-            # Format bold text
-            if "**" in line:
-                line = line.replace("**", "")
+    for line in lines:
+        # Remove ```python or ```
+        if line.strip().startswith("```"):
+            inside_code_block = not inside_code_block
+            formatted.append("\n--------------- CODE ----------------\n")
+            continue
 
-            # Format code blocks
-            if line.startswith("```"):
-                formatted.append("\n------------------ CODE ------------------")
-                continue
+        # Inside code block → indent code for readability
+        if inside_code_block:
+            formatted.append("    " + line)
+            continue
 
-            # Bulleted list
-            if line.strip().startswith("*"):
-                formatted.append(" • " + line.replace("*", "").strip())
-                continue
+        # Format headings
+        if line.startswith("###"):
+            formatted.append("\n" + line.replace("###", "").strip().upper())
+            formatted.append("-" * 40)
+            continue
 
-            formatted.append(line)
+        # Remove bold markdown
+        line = line.replace("**", "")
 
-        return "\n".join(formatted)
+        # Bullet points
+        if line.strip().startswith("* "):
+            formatted.append(" • " + line.replace("*", "").strip())
+            continue
+        
+        formatted.append(line)
+
+    return "\n".join(formatted)
 
 
 class VoiceCodeIDE:
@@ -132,27 +139,25 @@ class VoiceCodeIDE:
                 self.text_editor.insert(tk.INSERT, file.read())
             self.update_status(f"File opened from {file_path}")
 
-
     def open_debug_window(self):
         debug_window = tk.Toplevel(self.root)
         debug_window.title("Debug Code")
         debug_window.geometry("900x700")
 
-        # Input label
+        # ------------ INPUT LABEL -------------
         tk.Label(debug_window, text="Paste Your Code Below:", font=("Calibri", 12, "bold")).pack(pady=5)
 
-        # Text editor for code input
-        input_box = scrolledtext.ScrolledText(debug_window, wrap=tk.WORD, height=15, font=("Consolas", 12))
-        input_box.pack(fill="both", padx=10, pady=10, expand=True)
+        # ------------ INPUT BOX -------------
+        input_box = scrolledtext.ScrolledText(debug_window, wrap=tk.WORD, height=12, font=("Consolas", 12))
+        input_box.pack(fill="both", padx=10, pady=10, expand=False)
 
-        # Output label
-        tk.Label(debug_window, text="Debug Output:", font=("Calibri", 12, "bold")).pack(pady=5)
+        # ------------ BUTTON SECTION -------------
+        button_frame = tk.Frame(debug_window)
+        button_frame.pack(pady=10)
 
-        # Output display
-        output_box = scrolledtext.ScrolledText(debug_window, wrap=tk.WORD, height=15, font=("Consolas", 12))
-        output_box.pack(fill="both", padx=10, pady=10, expand=True)
 
-        # Button to debug
+
+        # ---- DEBUG BUTTON ----
         def run_debug():
             code = input_box.get("1.0", tk.END)
             if not code.strip():
@@ -170,7 +175,104 @@ class VoiceCodeIDE:
             except Exception as e:
                 output_box.insert(tk.END, f"\nError: {str(e)}")
 
-        tk.Button(debug_window, text="DEBUG CODE", command=run_debug, bg="blue", fg="white", padx=10, pady=5).pack(pady=10)
+        tk.Button(
+            button_frame,
+            text="DEBUG CODE",
+            command=run_debug,
+            bg="blue",
+            fg="white",
+            padx=10,
+            pady=5
+        ).pack(side=tk.LEFT, padx=5)
+
+        # ---- AUTO FIX BUTTON ----
+        def auto_fix():
+            code = input_box.get("1.0", tk.END)
+            if not code.strip():
+                messagebox.showwarning("Empty", "Please paste some code first.")
+                return
+
+            output_box.delete("1.0", tk.END)
+            output_box.insert(tk.END, "Fixing code... please wait.\n")
+
+            try:
+                fixed = self.gemini_assistant.auto_fix_code(code)
+                formatted = format_markdown_for_tk(fixed)
+                output_box.delete("1.0", tk.END)
+                output_box.insert(tk.END, formatted)
+
+            except Exception as e:
+                output_box.delete("1.0", tk.END)
+                output_box.insert(tk.END, f"Error: {str(e)}")
+
+        tk.Button(
+            button_frame,
+            text="AUTO FIX CODE",
+            command=auto_fix,
+            bg="#0ea5e9",
+            fg="white",
+            padx=10,
+            pady=5
+        ).pack(side=tk.LEFT, padx=5)
+
+        # ---- COPY FIXED CODE BUTTON ----
+        def copy_fixed_code():
+            fixed_code = output_box.get("1.0", tk.END).strip()
+            if not fixed_code:
+                messagebox.showwarning("Empty", "There is no fixed code to copy!")
+                return
+
+            debug_window.clipboard_clear()
+            debug_window.clipboard_append(fixed_code)
+            messagebox.showinfo("Copied", "Corrected code has been copied to the clipboard!")
+
+        tk.Button(
+            button_frame,
+            text="COPY OUTPUT CODE",
+            command=copy_fixed_code,
+            bg="#10b981",
+            fg="white",
+            padx=10,
+            pady=5
+        ).pack(side=tk.LEFT, padx=5)
+
+        def generate_tests():
+            code = input_box.get("1.0", tk.END).strip()
+            if not code:
+                messagebox.showwarning("Empty", "Please paste some code first.")
+                return
+
+            output_box.delete("1.0", tk.END)
+            output_box.insert(tk.END, "Generating test cases... please wait.\n")
+
+            try:
+                tests = self.gemini_assistant.generate_test_cases(code)
+                formatted = format_markdown_for_tk(tests)
+                output_box.delete("1.0", tk.END)
+                output_box.insert(tk.END, formatted)
+
+            except Exception as e:
+                output_box.delete("1.0", tk.END)
+                output_box.insert(tk.END, f"Error: {str(e)}")
+
+        tk.Button(
+            button_frame,
+            text="GENERATE TEST CASES",
+            command=lambda: generate_tests(),
+            bg="#f59e0b",
+            fg="white",
+            padx=10,
+            pady=5
+        ).pack(side=tk.LEFT, padx=5)
+
+
+        # ------------ OUTPUT LABEL -------------
+        tk.Label(debug_window, text="Debug Output:", font=("Calibri", 12, "bold")).pack(pady=5)
+
+        # ------------ OUTPUT BOX -------------
+        output_box = scrolledtext.ScrolledText(debug_window, wrap=tk.WORD, height=18, font=("Consolas", 12))
+        output_box.pack(fill="both", padx=10, pady=10, expand=True)
+
 
 
 if __name__ == "__main__":

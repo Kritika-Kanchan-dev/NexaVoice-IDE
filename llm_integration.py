@@ -67,6 +67,40 @@ class GeminiCodeAssistant:
 
         response = genai.GenerativeModel("gemini-pro-latest").generate_content(prompt)
         return response.text
+    
+    def auto_fix_code(self, code):
+        prompt = f"""
+        You are an expert software engineer.
+        Fix ALL errors in the following code and return ONLY the corrected version,
+        with no explanations, no comments, and no extra text.
+
+        CORRECT THIS CODE:
+        {code}
+        """
+
+        response = genai.GenerativeModel("gemini-pro-latest").generate_content(prompt)
+        return response.text.strip()
+    
+    def generate_test_cases(self, code):
+        prompt = f"""
+        You are an expert Python QA engineer.
+        Generate comprehensive Python TEST CASES for the following code.
+
+        Rules:
+        - Use Python unittest format
+        - Include edge cases
+        - Include normal cases
+        - Include error-handling cases if applicable
+        - DO NOT explain, ONLY return the complete test file code.
+
+        Code:
+        {code}
+        """
+
+        response = genai.GenerativeModel("gemini-pro-latest").generate_content(prompt)
+        return response.text.strip()
+
+
 
 class GeminiAPI:
     def __init__(self):
