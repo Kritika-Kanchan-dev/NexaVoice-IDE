@@ -6,7 +6,6 @@ It combines **voice-to-code**, **AI debugging**, **auto-fixing**, **code generat
 
 This project showcases real-world developer productivity tools enhanced by **Gemini 1.5 Flash**, **Flask backend**, **MongoDB Atlas**, and a **modern Tailwind UI**.
 
-URL : https://nexavoice-ide-frontend.vercel.app/
 ---
 
 # ✨ Features
@@ -46,9 +45,9 @@ URL : https://nexavoice-ide-frontend.vercel.app/
 
 Frontend (Vercel Hosting)
 |
-|-- fetch API calls --> Backend API (Render / Flask)
+|-- fetch API calls --> Backend API (Render)
 |
-|-- Gemini 1.5 Flash (Google API)
+|-- Gemini-pro-latest (Google API)
 |
 |-- MongoDB Atlas (Cloud Database)
 
@@ -197,6 +196,13 @@ print(add(2, 3))
 - “Write a Python class for a calculator.”
 
 ---
+
+### All Important Links
+Backend Repo: [https://github.com/.../nexavoice-ide-backend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-backend)
+Frontend Repo: [https://github.com/.../nexavoice-ide-frontend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-frontend)
+Master Repo: [https://github.com/.../NexaVoice-IDE](https://github.com/Kritika-Kanchan-dev/NexaVoice-IDE)
+Live Frontend: [https://nexavoice-ide-frontend.vercel.app](https://nexavoice-ide-frontend.vercel.app/)
+Live Backend: [https://nexavoice-ide-backend-1.onrender.com](https://nexavoice-ide-backend-1.onrender.com)
 
 # ❤️ Why NexaVoice IDE?
 
