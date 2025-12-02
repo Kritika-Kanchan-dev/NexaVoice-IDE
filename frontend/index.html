@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice-Powered Code Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+        }
+        
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .glass-effect {
+            background: rgba(26, 26, 46, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .glow-green {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        
+        .glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+        }
+        
+        .glow-yellow {
+            box-shadow: 0 0 20px rgba(234, 179, 8, 0.3);
+        }
+        
+        #codeInput, #outputBox {
+            background: #0d1117;
+            color: #c9d1d9;
+            scrollbar-width: thin;
+            scrollbar-color: #30363d #0d1117;
+        }
+        
+        #codeInput::placeholder {
+            color: #6e7681;
+        }
+        
+        #codeInput::-webkit-scrollbar,
+        #outputBox::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #codeInput::-webkit-scrollbar-track,
+        #outputBox::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+        
+        #codeInput::-webkit-scrollbar-thumb,
+        #outputBox::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 4px;
+        }
+        
+        #codeInput::-webkit-scrollbar-thumb:hover,
+        #outputBox::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+        
+        .btn-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: left 0.3s ease;
+        }
+        
+        .btn-hover:hover::before {
+            left: 100%;
+        }
+        
+        .terminal-line {
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen">
+
+    <div class="max-w-6xl mx-auto py-10 px-4">
+        
+        <!-- HEADER -->
+        <div class="text-center mb-12">
+            <div class="inline-block glass-effect rounded-2xl px-8 py-6 glow">
+                <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">
+                    🎤 Voice-Powered Code Editor
+                </h1>
+                <p class="text-gray-400 text-sm">Speak, Code, Create - AI Enhanced Development</p>
+            </div>
+        </div>
+
+        <!-- CODE EDITOR -->
+        <div class="glass-effect rounded-xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span class="ml-4 text-gray-400 text-sm code-font">editor.py</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">UTF-8</span>
+                    <span class="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">Python</span>
+                </div>
+            </div>
+            <textarea id="codeInput" 
+                class="w-full h-80 p-4 rounded-lg code-font text-sm border border-gray-700 focus:outline-none focus:border-blue-500 resize-none"
+                placeholder="// Speak or type your code here...
+// Voice commands: 'function', 'variable', 'if statement', etc."></textarea>
+        </div>
+
+        <!-- CONTROL BUTTONS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            
+            <!-- MIC BUTTON -->
+            <button id="micBtn" 
+                class="px-6 py-4 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl shadow-lg hover:from-red-500 hover:to-red-600 btn-hover glow-red flex items-center justify-center gap-2 font-semibold">
+                <span class="text-xl">🎤</span>
+                <span>Speak Code</span>
+            </button>
+
+            <!-- GENERATE CODE BUTTON -->
+            <button id="generateCodeBtn" onclick="generateCode()" 
+                class="px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl shadow-lg hover:from-blue-500 hover:to-blue-600 btn-hover glow flex items-center justify-center gap-2 font-semibold">
+                <span class="text-xl">✨</span>
+                <span>Generate</span>
+            </button>
+
+            <!-- COPY BUTTON -->
+            <button id="copyCodeBtn" onclick="copyGeneratedCode()" 
+                class="px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl shadow-lg hover:from-green-500 hover:to-green-600 btn-hover glow-green flex items-center justify-center gap-2 font-semibold">
+                <span class="text-xl">📋</span>
+                <span>Copy</span>
+            </button>
+
+            <!-- GO TO DEBUG PAGE -->
+            <a href="debug.html" class="px-6 py-4 bg-gradient-to-r from-yellow-600 to-yellow-700 text-white rounded-xl shadow-lg hover:from-yellow-500 hover:to-yellow-600 btn-hover glow-yellow flex items-center justify-center gap-2 font-semibold">
+                <span class="text-xl">🐛</span>
+                <span>Debugger</span>
+            </a>
+        </div>
+
+        <!-- OUTPUT BOX -->
+        <div class="glass-effect rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400 flex items-center gap-2">
+                    <span>⚡</span>
+                    AI Output
+                </h2>
+                <div class="flex gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-xs text-gray-400">Ready</span>
+                </div>
+            </div>
+            <div class="terminal-line">
+                <pre id="outputBox" 
+                    class="w-full h-72 p-4 rounded-lg code-font text-sm border border-gray-700 overflow-auto"></pre>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center mt-8 text-gray-500 text-sm">
+            <p>Powered by AI • Built for Developers • <span class="text-blue-400">Made By Nexabyte</span></p>
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
