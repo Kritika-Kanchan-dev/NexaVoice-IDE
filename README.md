@@ -6,6 +6,7 @@ It combines **voice-to-code**, **AI debugging**, **auto-fixing**, **code generat
 
 This project showcases real-world developer productivity tools enhanced by **Gemini 1.5 Flash**, **Flask backend**, **MongoDB Atlas**, and a **modern Tailwind UI**.
 
+URL : https://nexavoice-ide-frontend.vercel.app/
 ---
 
 # ✨ Features
