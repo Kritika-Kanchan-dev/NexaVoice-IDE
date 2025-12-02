@@ -8,7 +8,6 @@ class GeminiCodeAssistant:
         Initializes the Gemini Code Assistant.
         """
         genai.configure(api_key=api_key)
-        # We use gemini-1.5-flash because it's fast and very capable
         self.model = genai.GenerativeModel('gemini-pro-latest')
         
     def _clean_response(self, text):
@@ -26,7 +25,6 @@ class GeminiCodeAssistant:
         """
         Takes a natural language command and returns pure Python code.
         """
-        # This is our master prompt. It sets the rules for the AI.
         prompt = f"""
         You are an expert Python code generation assistant.
         Your sole purpose is to convert the user's request into a single, clean, and valid Python code snippet.
@@ -51,16 +49,32 @@ class GeminiCodeAssistant:
         except Exception as e:
             print(f"Gemini API Error: {e}")
             return f"# ERROR: An API error occurred: {e}"
+        
+
+    def debug_code(self, code):
+        prompt = f"""
+        You are a Python expert. Analyze the following code and find ALL errors.
+        Return your answer in this format:
+
+        1. Error Explanation
+        2. Exact line(s) causing the issue
+        3. Corrected Code
+        4. Additional Suggestions
+
+        Code:
+        {code}
+        """
+
+        response = genai.GenerativeModel("gemini-pro-latest").generate_content(prompt)
+        return response.text
+
 class GeminiAPI:
     def __init__(self):
         try:
-            # Define the model name as a variable
             model_name = 'gemini-pro-latest'
             
-            # Initialize the model
             self.model = genai.GenerativeModel(model_name)
             
-            # Print our verification message right after successful initialization
             print(f"✅ Successfully initialized and using model: {model_name}")
 
         except Exception as e:
