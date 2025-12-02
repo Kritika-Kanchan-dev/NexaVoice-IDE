@@ -198,11 +198,11 @@ print(add(2, 3))
 ---
 
 ### All Important Links
-Backend Repo: [https://github.com/.../nexavoice-ide-backend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-backend)
-Frontend Repo: [https://github.com/.../nexavoice-ide-frontend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-frontend)
-Master Repo: [https://github.com/.../NexaVoice-IDE](https://github.com/Kritika-Kanchan-dev/NexaVoice-IDE)
-Live Frontend: [https://nexavoice-ide-frontend.vercel.app](https://nexavoice-ide-frontend.vercel.app/)
-Live Backend: [https://nexavoice-ide-backend-1.onrender.com](https://nexavoice-ide-backend-1.onrender.com)
+- Backend Repo: [https://github.com/.../nexavoice-ide-backend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-backend)
+- Frontend Repo: [https://github.com/.../nexavoice-ide-frontend](https://github.com/Kritika-Kanchan-dev/nexavoice-ide-frontend)
+- Master Repo: [https://github.com/.../NexaVoice-IDE](https://github.com/Kritika-Kanchan-dev/NexaVoice-IDE)
+- Live Frontend: [https://nexavoice-ide-frontend.vercel.app](https://nexavoice-ide-frontend.vercel.app/)
+- Live Backend: [https://nexavoice-ide-backend-1.onrender.com](https://nexavoice-ide-backend-1.onrender.com)
 
 # ❤️ Why NexaVoice IDE?
 
