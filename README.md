@@ -1,75 +1,209 @@
-# ✨ Core Feature
-- The primary goal of this project is to provide a hands-free coding experience for generating snippets and functions.
+# 🚀 NexaVoice IDE  – AI-Powered Voice Coding IDE  
+### Built by Team **NexaByte**
 
-- 🎤 Voice-to-Code Generation: Describe a function or a piece of logic in plain English. The application captures your voice, sends it to the Gemini API, and generates the corresponding Python code for you.
-- 📝 Simple GUI Editor: A clean graphical user interface built with Python's native Tkinter library, providing a text area to view the generated code.
-- 🚀 Responsive UI: The application uses threading to process voice recognition and API calls in the background, ensuring the user interface remains responsive and doesn't freeze.
-- ⚙️ Secure API Key Handling: Manages the Gemini API key securely using a .env file, keeping your credentials separate from the source code.
-- 🛠️ How It Works
+NexaVoice IDE  is an advanced AI-powered coding assistant built for The Claude Challenge Hackathon.  
+It combines **voice-to-code**, **AI debugging**, **auto-fixing**, **code generation**, and **MongoDB-powered history** in one clean, powerful interface.
 
-## The application follows a simple workflow:
+This project showcases real-world developer productivity tools enhanced by **Gemini 1.5 Flash**, **Flask backend**, **MongoDB Atlas**, and a **modern Tailwind UI**.
 
-- The user clicks the "Start Listening" button in the GUI.
-- A background thread starts listening for audio from the user's microphone using the SpeechRecognition library.
-- The captured audio is transcribed into a text command.
-- This command is sent as a prompt to the Google Gemini API to generate Python code.
-- The code returned by Gemini is inserted directly into the text editor.
+---
 
-# 📦 Setup and Installation
-### Follow these steps to get the project running on your local machine.
+# ✨ Features
 
-- 1. Prerequisites
-Python 3.10 or higher.
-A Google Gemini API key. You can get one from Google AI Studio.
-- 2. Clone the Repository
+## 🧠 AI Features
+- **AI Debugging** – Find errors, line numbers, and suggested fixes  
+- **Auto Code Fixing** – Instantly fix broken code  
+- **Code Generation** – Generate complete code from natural language  
+- **Test Case Generator** – Creates Python unittest boilerplates  
+- **Code Formatting** – Clean output without markdown noise  
 
+## 🎙 Voice Features
+- **Voice-to-Code Input** using Web Speech API  
+- Speak instructions and instantly convert them into code  
+- Perfect for hands-free coding  
+
+## 💾 MongoDB History (Atlas Cloud)
+- Debug history  
+- Auto-fix history  
+- Code generation history  
+- Timestamped & organized collections  
+
+## 💻 UI & UX
+- Responsive Tailwind-based interface  
+- Fast, lightweight, fully browser-based frontend  
+- Copy buttons, clean formatting, and smooth workflow  
+
+## 🌐 Deployment
+- **Frontend** → Vercel  
+- **Backend** → Render  
+- **Database** → MongoDB Atlas  
+- 100% cloud-based and fully scalable  
+
+---
+
+# 🏗️ Project Architecture
+
+Frontend (Vercel Hosting)
+|
+|-- fetch API calls --> Backend API (Render / Flask)
+|
+|-- Gemini 1.5 Flash (Google API)
+|
+|-- MongoDB Atlas (Cloud Database)
+
+
+---
+
+# 📁 Folder Structure
+
+Claude_Challenge/
+│
+├── backend/
+│ ├── app.py
+│ ├── llm_handler.py
+│ ├── db.py
+│ ├── .env
+│ └── requirements.txt
+│
+├── frontend/
+│ ├── app.js
+│ ├── debug.html
+│ └── index.html
+│
+├── README.md
+└──requirements.txt
+
+---
+
+# ⚙️ Tech Stack
+
+### **Frontend**
+- HTML, JavaScript  
+- Tailwind CSS (CDN version)  
+- Web Speech API  
+
+### **Backend**
+- Python (Flask)  
+- Flask-CORS  
+- Gunicorn (production)  
+- Google Generative AI (gemini-pro-latest)  
+
+### **Database**
+- MongoDB Atlas (Cloud)  
+- PyMongo  
+
+---
+
+# 📦 Installation (Local Development)
+
+## 1️⃣ Clone the Backend
 ```bash
-git clone <your-repository-url>
-cd <your-repository-directory>
+git clone https://github.com/Kritika-Kanchan-dev/nexabyte-backend.git
+cd nexabyte-backend
 ```
 
-- 3. Set Up a Virtual Environment
-It's highly recommended to use a virtual environment to manage project dependencies.
-
-### On macOS/Linux:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-### On Windows:
-
+## 2️⃣ Create Virtual Environment
 ```bash
 python -m venv venv
-.\venv\Scripts\activate
+venv\Scripts\activate
 ```
 
-- 4. Install Dependencies
-Created a requirements.txt install them using the following command:
+## 3️⃣ Install Requirements
+```bash
+pip install -r requirements.txt
+```
+
+## 4️⃣ Add Environment Variables
+```bash
+GEMINI_API_KEY=your_gemini_key
+MONGO_URI=your_mongo_atlas_url
+DB_NAME=codeide
+```
+
+## 5️⃣ Run Backend Locally
+```bash
+python app.py
+```
+- Backend will run at: http://127.0.0.1:5000
+
+# 🎨 Run Frontend Locally
+
+## Open a terminal inside /frontend:
+```bash
+cd frontend
+python -m http.server 8000
+```
+
+## Open:
+```bash
+http://localhost:8000/index.html
+```
+
+# 🌐 Deployment Guide
+
+## 🚀 Backend Deployment (Render)
+
+- Push backend folder to GitHub
+
+- Create Render Web Service
+
+- Set Build Command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Note: pyaudio can sometimes be tricky to install. If you encounter issues, you may need to install system-level dependencies first (like portaudio on macOS/Linux or using a pre-compiled wheel on Windows).
+- Start Command:
 
-- 5. Configure Your API Key
-Create a file named .env in the root directory of the project.
-
-Add your Gemini API key to this file in the following format:
-
-```markdown
-GEMINI_API_KEY="YOUR_SUPER_SECRET_API_KEY"
-``` 
-
-## 🚀 How to Use
-Run the main application file from your terminal:
 ```bash
-python voice_ide.py
+gunicorn app:app
 ```
-The GUI window will appear. Click the "Start Listening" button.
-Speak a command clearly into your microphone.
-Example Voice Commands
-- "Create a Python function that takes a list and returns the sum."
-- "Write a script to read a CSV file using pandas."
-- "Generate a simple Flask application."
+
+- Add environment variables
+
+- Deploy → Get backend URL
+
+## 🚀 Frontend Deployment (Vercel)
+
+- Push frontend folder to GitHub
+
+- Import repo into Vercel
+
+- Select Static Website
+
+- Deploy
+
+- Update this line in app.js:
+
+- const API_URL = "https://your-backend-url.onrender.com";
+
+## Your live site is ready 🎉
+
+# 🧪 Example Prompts to Try
+### Debug:
+```bash
+def add(a, b):
+    return a + c
+print(add(2, 3))
+```
+
+### Generate Code:
+
+- create a python student management system with add update delete list features
+
+### Voice Command:
+
+- “Write a Python class for a calculator.”
+
+---
+
+# ❤️ Why NexaVoice IDE?
+
+Because developers deserve a coding assistant that understands:
+- ✔ Voice
+- ✔ Code
+- ✔ Errors
+- ✔ Fixes
+- ✔ History
+
+NexaVoice IDE is built to make coding faster, smarter, and more human-friendly.
